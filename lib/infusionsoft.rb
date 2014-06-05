@@ -1,27 +1,37 @@
+require 'infusionsoft/config'
+
 require 'infusionsoft/api'
-require 'infusionsoft/client'
-require 'infusionsoft/configuration'
+
+require 'infusionsoft/connection'
+require 'infusionsoft/request'
+
+require 'infusionsoft/client/contact'
+require 'infusionsoft/client/email'
+require 'infusionsoft/client/invoice'
+require 'infusionsoft/client/data'
+require 'infusionsoft/client/affiliate'
+require 'infusionsoft/client/file'
+require 'infusionsoft/client/ticket' # Deprecated by Infusionsoft
+require 'infusionsoft/client/search'
+require 'infusionsoft/client/credit_card'
+
 require 'infusionsoft/api_logger'
 
 module Infusionsoft
-  extend Configuration
-  class << self
-    # Alias for Infusionsoft::Client.new
-    #
-    # @return [Infusionsoft::Client]
-    def new(options={})
-      Infusionsoft::Client.new(options)
-    end
 
-    # Delegate to ApiInfusionsoft::Client
-    def method_missing(method, *args, &block)
-      return super unless new.respond_to?(method)
-      new.send(method, *args, &block)
-    end
+  extend self
 
-    def respond_to?(method, include_private = false)
-      new.respond_to?(method, include_private) || super(method, include_private)
-    end
+  def configure
+    yield config
+  end
+
+  def config
+    @config ||= Config.new
+  end
+
+  # null out the config so that it can be rewritten to, then used in new 'get' calls
+  def reset
+    @config = nil
   end
 end
 

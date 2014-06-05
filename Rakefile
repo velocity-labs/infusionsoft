@@ -1,3 +1,8 @@
-require 'rake/testtask'
+require 'bundler'
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new('spec')
 
-Rake::TestTask.new
+Bundler::GemHelper.install_tasks
+
+desc 'Run tests'
+task :default => :spec

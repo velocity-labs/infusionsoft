@@ -105,7 +105,7 @@ module Infusionsoft
       # @param [Ingeger] campaign_id
       # @return [Boolean] returns true/false if sequence was resumed
       def contact_resume_campaign(contact_id, campaign_id)
-        response = get('ConactService.resumeCampaignForContact', contact_id, campaign_id)
+        response = get('ContactService.resumeCampaignForContact', contact_id, campaign_id)
       end
 
       # Immediately performs the given follow-up sequence step_id for the given contacts.
