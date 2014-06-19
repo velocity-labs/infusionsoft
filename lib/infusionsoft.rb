@@ -1,21 +1,24 @@
-require 'infusionsoft/config'
-
+require "xmlrpc/client"
+require 'hashie'
 require 'infusionsoft/api'
-
 require 'infusionsoft/connection'
-require 'infusionsoft/request'
-
-require 'infusionsoft/client/contact'
-require 'infusionsoft/client/email'
-require 'infusionsoft/client/invoice'
-require 'infusionsoft/client/data'
-require 'infusionsoft/client/affiliate'
-require 'infusionsoft/client/file'
-require 'infusionsoft/client/ticket' # Deprecated by Infusionsoft
-require 'infusionsoft/client/search'
-require 'infusionsoft/client/credit_card'
-
+require 'infusionsoft/base'
+require 'infusionsoft/exceptions'
+require 'infusionsoft/exception_handler'
+require 'infusionsoft/config'
 require 'infusionsoft/api_logger'
+require 'infusionsoft/contact'
+require 'infusionsoft/contact_group'
+require 'infusionsoft/contact_group_assign'
+require 'infusionsoft/email'
+require 'infusionsoft/data'
+require 'infusionsoft/data_form_field'
+# require 'infusionsoft/invoice'
+# require 'infusionsoft/affiliate'
+# require 'infusionsoft/file'
+# require 'infusionsoft/ticket' # Deprecated by Infusionsoft
+# require 'infusionsoft/search'
+# require 'infusionsoft/credit_card'
 
 module Infusionsoft
 
@@ -33,5 +36,23 @@ module Infusionsoft
   def reset
     @config = nil
   end
+
+  def log
+    config.api_logger
+  end
+
+  def api_url
+    config.api_url
+  end
+
+  def api_key
+    config.api_key
+  end
+
+  def user_agent
+    config.user_agent
+  end
 end
 
+# Alias for shorter convenience
+IS = Infusionsoft

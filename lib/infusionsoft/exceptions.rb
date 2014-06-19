@@ -2,10 +2,11 @@
 # Pattern from Exceptional Ruby by Avdi Grimm (http://avdi.org/talks/exceptional-ruby-2011-02-04/)
 class InfusionAPIError < StandardError
   attr_reader :original
-  def initialize(msg, original=nil);
-  Infusionsoft.api_logger.error "ERROR: #{msg}"
-  super(msg);
-  @original = original;
+
+  def initialize(msg, original = nil)
+    Infusionsoft.log.error "ERROR: #{ msg }"
+    super(msg);
+    @original = original;
   end
 end
 

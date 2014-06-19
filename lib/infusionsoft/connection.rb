@@ -1,43 +1,47 @@
-require "xmlrpc/client"
-require 'infusionsoft/exception_handler'
-
 module Infusionsoft
   module Connection
-    private
 
-    def connection(service_call, *args)
-      client = XMLRPC::Client.new3({
-        'host' => api_url,
-        'path' => "/api/xmlrpc",
-        'port' => 443,
-        'use_ssl' => true
-      })
-      client.http_header_extra = {'User-Agent' => user_agent}
-      begin
-        api_logger.info "CALL: #{service_call} api_key:#{api_key} at:#{Time.now} args:#{args.inspect}"
-        result = client.call("#{service_call}", api_key, *args)
-        if result.nil?; ok_to_retry('nil response') end
-      rescue Timeout::Error => timeout
-        # Retry up to 5 times on a Timeout before raising it
-        ok_to_retry(timeout) ? retry : raise
-      rescue XMLRPC::FaultException => xmlrpc_error
-        # Catch all XMLRPC exceptions and rethrow specific exceptions for each type of xmlrpc fault code
-        Infusionsoft::ExceptionHandler.new(xmlrpc_error)
-      end # Purposefully not catching other exceptions so that they can be handled up the stack
+    def get(service_call, *args)
+      client = XMLRPC::Client.new3(
+        host: Infusionsoft.api_url,
+        path: "/api/xmlrpc",
+        port: 443,
+        use_ssl: true
+      )
 
-      api_logger.info "RESULT: #{result.inspect}"
-      return result
-    end
+      client.http_header_extra = {'User-Agent' => Infusionsoft.user_agent}
 
-    def ok_to_retry(e)
-      @retry_count += 1
-      if @retry_count <= 5
-        api_logger.warn "WARNING: [#{e}] retrying #{@retry_count}"
-        true
-      else
-        false
+      Retriable.retriable on: Timeout::Error, tries: 3, interval: 1 do
+        Infusionsoft.log.info "CALL: #{ service_call } api_key:#{ Infusionsoft.api_key } at:#{ Time.now } args:#{ args.inspect } \n"
+
+        begin
+          resp = client.call("#{ service_call }", Infusionsoft.api_key, *args)
+
+          if resp.nil?
+            Infusionsoft.log.warn "WARNING: [#{ e }] retrying"
+            raise Timeout::Error.new
+          end
+
+          Infusionsoft.log.info "RESULT: #{ resp.inspect }"
+          resp
+
+        rescue XMLRPC::FaultException => xmlrpc_error
+          # Catch all XMLRPC exceptions and rethrow specific exceptions for each type of xmlrpc fault code
+          Infusionsoft::ExceptionHandler.new(xmlrpc_error)
+        end
       end
-    end
 
+    end
   end
 end
+
+# Uncomment to view RAW XML
+#
+# class XMLRPC::Client
+#    def call(method, *args)
+#      request = create().methodCall(method, *args)
+#      puts request
+#      data = do_rpc(request, false)
+#      parser().parseMethodResponse(data)
+#    end
+# end

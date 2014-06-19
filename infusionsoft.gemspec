@@ -15,6 +15,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new('>= 1.3.6')
 
   s.add_dependency 'retriable'
+  s.add_dependency 'hashie'
 
   s.add_development_dependency 'activesupport', '< 4.0'
   s.add_development_dependency 'bundler',       '~> 1.5'

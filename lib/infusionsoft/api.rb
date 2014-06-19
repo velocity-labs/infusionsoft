@@ -1,24 +1,36 @@
-require 'infusionsoft/configuration'
-require 'infusionsoft/connection'
-require 'infusionsoft/request'
-
 module Infusionsoft
+  module Api
+    def self.included(base)
+      base.extend Infusionsoft::Connection
+      base.extend ClassMethods
+    end
 
-  class Api
-    include Connection
-    include Request
+    module ClassMethods
+      def fields_for(table)
+        case table
+        when 'ContactGroup'
+          Infusionsoft::ContactGroup.fields
+        when 'Contact'
+          Infusionsoft::Contact.fields
+        when 'DataFormField'
+          Infusionsoft::DataFormField.fields
+        when 'DataFormGroup'
+          Infusionsoft::DataFormGroup.fields
+        when 'DataFormTab'
+          Infusionsoft::DataFormTab.fields
+        when 'ContactGroupAssign'
+          Infusionsoft::ContactGroupAssign.fields
+        else
+          raise Exception.new("Missing fields for class #{table}")
+        end
+      end
 
-    attr_accessor :retry_count
-    attr_accessor *Configuration::VALID_OPTION_KEYS
-
-    def initialize(options={})
-      @retry_count = 0
-      options = Infusionsoft.options.merge(options)
-      Configuration::VALID_OPTION_KEYS.each do |key|
-        send("#{key}=", options[key])
+      def infusionsoft_class(table)
+        "Infusionsoft::#{table}".constantize
       end
     end
 
-  end
 
+  end
 end
+
