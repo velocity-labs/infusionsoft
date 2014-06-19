@@ -1,10 +1,10 @@
 # encoding: utf-8
 $LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
-require 'infusionsoft/version'
+require 'infusionsoft'
 
 Gem::Specification.new do |s|
   s.name                      = 'infusionsoft'
-  s.version                   = Infusionsoft::VERSION
+  s.version                   = Infusionsoft.version
   s.platform                  = Gem::Platform::RUBY
   s.summary                   = 'Ruby wrapper for the Infusionsoft API'
   s.authors                   = ["Velocity Labs"]

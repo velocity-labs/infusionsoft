@@ -22,6 +22,7 @@ require 'infusionsoft/data_form_field'
 
 module Infusionsoft
 
+  # add all the module instance methods as module functions
   extend self
 
   def configure
@@ -51,6 +52,10 @@ module Infusionsoft
 
   def user_agent
     config.user_agent
+  end
+
+  def version
+    config.version
   end
 end
 
