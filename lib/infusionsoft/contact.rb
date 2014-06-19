@@ -4,20 +4,6 @@ module Infusionsoft
   # addition to managing follow up sequences, tags and action sets.
   class Contact < Base
 
-    def self.fields
-      default_fields + custom_fields
-    end
-
-    def self.default_fields
-      ['Address1Type', 'Address2Street1', 'Address2Street2', 'Address2Type', 'Address3Street1', 'Address3Street2', 'Address3Type', 'Anniversary', 'AssistantName', 'AssistantPhone', 'BillingInformation', 'Birthday', 'City', 'City2', 'City3', 'Company', 'AccountId', 'CompanyID', 'ContactNotes', 'ContactType', 'Country', 'Country2', 'Country3', 'CreatedBy', 'DateCreated', 'Email', 'EmailAddress2', 'EmailAddress3', 'Fax1', 'Fax1Type', 'Fax2', 'Fax2Type', 'FirstName', 'Groups', 'Id', 'JobTitle', 'LastName', 'LastUpdated', 'LastUpdatedBy', 'Leadsource', 'LeadSourceId', 'MiddleName', 'Nickname', 'OwnerID', 'Password', 'Phone1', 'Phone1Ext', 'Phone1Type', 'Phone2', 'Phone2Ext', 'Phone2Type', 'Phone3', 'Phone3Ext', 'Phone3Type', 'Phone4', 'Phone4Ext', 'Phone4Type', 'Phone5', 'Phone5Ext', 'Phone5Type', 'PostalCode', 'PostalCode2', 'PostalCode3', 'ReferralCode', 'SpouseName', 'State', 'State2', 'State3', 'StreetAddress1', 'StreetAddress2', 'Suffix', 'Title', 'Username', 'Validated', 'Website', 'ZipFour1', 'ZipFour2', 'ZipFour3']
-    end
-
-    def self.custom_fields
-      # -1 for Contact
-      response = Infusionsoft::Data.query "DataFormField", {'FormId' => -1}
-      response.map { |field| "_#{field.Name}"}
-    end
-
     def save
       data = self.to_hash
       data.delete("LastUpdated")
@@ -55,6 +41,20 @@ module Infusionsoft
 
     def remove_from_group(group_id)
       IS::Contact.remove_from_group(self.Id, group_id)
+    end
+
+    def self.fields
+      default_fields + custom_fields
+    end
+
+    def self.default_fields
+      ['Address1Type', 'Address2Street1', 'Address2Street2', 'Address2Type', 'Address3Street1', 'Address3Street2', 'Address3Type', 'Anniversary', 'AssistantName', 'AssistantPhone', 'BillingInformation', 'Birthday', 'City', 'City2', 'City3', 'Company', 'AccountId', 'CompanyID', 'ContactNotes', 'ContactType', 'Country', 'Country2', 'Country3', 'CreatedBy', 'DateCreated', 'Email', 'EmailAddress2', 'EmailAddress3', 'Fax1', 'Fax1Type', 'Fax2', 'Fax2Type', 'FirstName', 'Groups', 'Id', 'JobTitle', 'LastName', 'LastUpdated', 'LastUpdatedBy', 'Leadsource', 'LeadSourceId', 'MiddleName', 'Nickname', 'OwnerID', 'Password', 'Phone1', 'Phone1Ext', 'Phone1Type', 'Phone2', 'Phone2Ext', 'Phone2Type', 'Phone3', 'Phone3Ext', 'Phone3Type', 'Phone4', 'Phone4Ext', 'Phone4Type', 'Phone5', 'Phone5Ext', 'Phone5Type', 'PostalCode', 'PostalCode2', 'PostalCode3', 'ReferralCode', 'SpouseName', 'State', 'State2', 'State3', 'StreetAddress1', 'StreetAddress2', 'Suffix', 'Title', 'Username', 'Validated', 'Website', 'ZipFour1', 'ZipFour2', 'ZipFour3']
+    end
+
+    def self.custom_fields
+      # -1 for Contact
+      response = Infusionsoft::Data.query "DataFormField", {'FormId' => -1}
+      response.map { |field| "_#{field.Name}"}
     end
 
     # Creates a new contact record from the data passed in the associative array.
@@ -116,7 +116,12 @@ module Infusionsoft
     # @example this is what you would get back
     #   { "FirstName" => "John", "LastName" => "Doe" }
     def self.load(id, *selected_fields)
-      fields = selected_fields.present? ? selected_fields : IS::Contact.fields
+      fields = if selected_fields.present?
+                 selected_fields
+               else
+                IS::Contact.fields
+              end
+
       Contact.new get('ContactService.load', id, fields)
     end
 
@@ -127,7 +132,11 @@ module Infusionsoft
     # @param [Array] selected_fields the list of fields you want with it's data
     # @return [Array<Hash>] the list of contacts with it's fields and data
     def self.find_by_email(email, *selected_fields)
-      fields = selected_fields.present? ? selected_fields : IS::Contact.fields.reject{|field| field.eql?('AccountId') }
+      fields = if selected_fields.present?
+                 selected_fields
+               else
+                 IS::Contact.fields.reject{|field| field.eql?('AccountId') }
+               end
 
       temp = get('ContactService.findByEmail', email, fields)
 
