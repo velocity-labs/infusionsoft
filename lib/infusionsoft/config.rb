@@ -12,7 +12,7 @@ module Infusionsoft
     end
 
     def user_agent
-      @user_agent ||= "Infusionsoft-#{VERSION} (RubyGem)"
+      @user_agent ||= "Infusionsoft-#{Infusionsoft::VERSION} (RubyGem)"
     end
 
     def api_logger
