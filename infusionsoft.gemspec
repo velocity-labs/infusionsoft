@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name                      = 'infusionsoft'
-  s.version                   = Infusionsoft.version
+  s.version                   = '2.0.2'
   s.platform                  = Gem::Platform::RUBY
   s.summary                   = 'Ruby wrapper for the Infusionsoft API'
   s.authors                   = ["Velocity Labs"]

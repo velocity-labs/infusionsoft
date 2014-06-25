@@ -54,9 +54,6 @@ module Infusionsoft
     config.user_agent
   end
 
-  def version
-    config.version
-  end
 end
 
 # Alias for shorter convenience
