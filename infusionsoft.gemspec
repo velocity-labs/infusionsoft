@@ -1,6 +1,4 @@
 # encoding: utf-8
-$LOAD_PATH.unshift File.expand_path('../lib', __FILE__)
-require 'infusionsoft'
 
 Gem::Specification.new do |s|
   s.name                      = 'infusionsoft'
@@ -10,7 +8,6 @@ Gem::Specification.new do |s|
   s.authors                   = ["Velocity Labs"]
   s.email                     = ['irish@velocitylabs.io']
   s.files                     = `git ls-files`.split($/)
-  # s.homepage                  = 'https://github.com/nateleavitt/infusionsoft'
   s.require_paths             = ['lib']
   s.required_rubygems_version = Gem::Requirement.new('>= 1.3.6')
 
