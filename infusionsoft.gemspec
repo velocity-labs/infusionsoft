@@ -11,8 +11,8 @@ Gem::Specification.new do |s|
   s.require_paths             = ['lib']
   s.required_rubygems_version = Gem::Requirement.new('>= 1.3.6')
 
-  s.add_runtime_dependency 'retriable'
-  s.add_runtime_dependency 'hashie'
+  s.add_runtime_dependency 'retriable', '~> 1.4.1'
+  s.add_runtime_dependency 'hashie', '~> 3.0.0'
 
   s.add_development_dependency 'activesupport', '< 4.0'
   s.add_development_dependency 'bundler',       '~> 1.5'
