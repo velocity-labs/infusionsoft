@@ -19,6 +19,7 @@ require 'infusionsoft/data_form_field'
 # require 'infusionsoft/ticket' # Deprecated by Infusionsoft
 # require 'infusionsoft/search'
 # require 'infusionsoft/credit_card'
+require 'infusionsoft/funnel'
 
 module Infusionsoft
 
